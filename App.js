@@ -40,7 +40,7 @@ const Stack = createNativeStackNavigator();
 const App: () => Node = () => {
   
   AppLovinMAX.initialize("2wnrCCdHR82ezJ-Wv6xKg8isTBLymX2GMJHwOlk6_1fxI0iz8uJTpNtsABwUUl6N-nxMUwz5NgX3OaS-Vg4SuG", (configuration) => {
-    AppLovinMAX.showMediationDebugger();
+    //AppLovinMAX.showMediationDebugger();
   });
 
   return (

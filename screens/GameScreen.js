@@ -39,6 +39,7 @@ export default function GameScreen({navigation, route}) {
   const [score, setScore] = useState(-1);
   const [count, setCount] = useState(0);
   const [strike, setStrike] = useState(0);
+  const [retryAttempt, setRetryAttempt] = useState(0);
   let wordArray = words[data.item];
   const category = data.item;
   const alphabet1 = [
@@ -74,8 +75,6 @@ export default function GameScreen({navigation, route}) {
     android: 'c610fb63a0e41e0c',
   });
 
-  const [retryAttempt, setRetryAttempt] = useState(0);
-
   const navigateMe = () => {
     navigation.navigate('StatsScreen', {category: randomWord, score: score});
   };
@@ -84,9 +83,9 @@ export default function GameScreen({navigation, route}) {
     let myWord = wordArray[Math.floor(Math.random() * wordArray.length)];
     setrandomWord(myWord);
     if (score % 2 == 0 && score != 0) {
-      initializeInterstitialAds();
+      loadInterstitial();
       if (AppLovinMAX.isInterstitialReady(myinterstitial)) {
-        AppLovinMAX.showInterstitial(myinterstitial);
+         AppLovinMAX.showInterstitial(myinterstitial);
       } else {
         console.log('haris this some bullshit');
       }
@@ -144,8 +143,9 @@ export default function GameScreen({navigation, route}) {
   //       return false;
   //     }
   //   };
+  
 
-  function initializeInterstitialAds() {
+  async function initializeInterstitialAds() {
     AppLovinMAX.addEventListener('OnInterstitialLoadedEvent', () => {
       // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(INTERSTITIAL_AD_UNIT_ID) will now return 'true'
 
@@ -178,12 +178,19 @@ export default function GameScreen({navigation, route}) {
     });
 
     // Load the first interstitial
-    loadInterstitial();
+    try{
+      loadInterstitial();
+    }
+    catch(e){
+      console.log(e);
+    }
   }
 
   function loadInterstitial() {
     AppLovinMAX.loadInterstitial(myinterstitial);
   }
+
+  initializeInterstitialAds();
 
   return (
     <ImageBackground

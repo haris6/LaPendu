@@ -58,7 +58,7 @@ export default function HomeScreen({navigation}) {
       loadRewardedAd();
     });
     AppLovinMAX.addEventListener('OnRewardedAdReceivedRewardEvent', () => {});
-
+    
     // Load the first rewarded ad
     loadRewardedAd();
   };
@@ -77,7 +77,9 @@ export default function HomeScreen({navigation}) {
     } else {
       if (AppLovinMAX.isRewardedAdReady(myreward)) {
         AppLovinMAX.showRewardedAd(myreward);
-        navigation.navigate('GameScreen', {item});
+        setTimeout(function () {
+          navigation.navigate('GameScreen', {item});
+        }, 10);
       } else {
         console.log('reward ad yawaing');
       }
