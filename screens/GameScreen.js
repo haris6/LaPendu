@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  BackHandler,
 } from 'react-native';
 import words from '../data.json';
 import AppLovinMAX from 'react-native-applovin-max';
@@ -39,6 +40,7 @@ export default function GameScreen({navigation, route}) {
   const [score, setScore] = useState(-1);
   const [count, setCount] = useState(0);
   const [strike, setStrike] = useState(0);
+  const [tries,setTries] = useState(0);
   const [retryAttempt, setRetryAttempt] = useState(0);
   let wordArray = words[data.item];
   const category = data.item;
@@ -76,13 +78,24 @@ export default function GameScreen({navigation, route}) {
   });
 
   const navigateMe = () => {
-    navigation.navigate('StatsScreen', {category: randomWord, score: score});
+    navigation.navigate('StatsScreen', {category: category, score: score, word: randomWord, tries: tries});
   };
+
+  const backAction = () => {
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
+  }, []);
 
   useEffect(() => {
     let myWord = wordArray[Math.floor(Math.random() * wordArray.length)];
     setrandomWord(myWord);
-    if (score % 2 == 0 && score != 0) {
+    if ((score % 2 == 0 && score != 0) || (tries % 2 == 0 && tries != 0)) {
       loadInterstitial();
       if (AppLovinMAX.isInterstitialReady(myinterstitial)) {
          AppLovinMAX.showInterstitial(myinterstitial);
@@ -93,10 +106,17 @@ export default function GameScreen({navigation, route}) {
   }, [score]);
 
   useEffect(() => {
+    if (route.params?.tries) {
+      setTries(route.params?.tries)
+    }
+  }, [route.params?.tries]);
+
+  useEffect(() => {
     if (strike == 6) {
       console.log('GAME OVER');
       setCount(0);
       setStrike(0);
+      setTries(tries + 1);
       setLetters('');
       setScore(0);
       navigateMe();
@@ -134,15 +154,6 @@ export default function GameScreen({navigation, route}) {
     }
     setPressed(pressed + item);
   };
-
-  //   const disableButton = item => {
-  //     console.log('haris im presses' + pressed);
-  //     if (pressed.includes(item)) {
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   };
   
 
   async function initializeInterstitialAds() {
@@ -206,7 +217,7 @@ export default function GameScreen({navigation, route}) {
           }}>
           <TouchableOpacity
             style={{position: 'absolute', left: 5}}
-            onPress={() => navigation.navigate('HomeScreen')}>
+            onPress={() => navigation.navigate('HomeScreen',{category:category})}>
             <Image
               style={{height: 69, width: 69}}
               source={require('../assets/backButt.imageset/back.png')}></Image>
@@ -320,7 +331,6 @@ export default function GameScreen({navigation, route}) {
                 onPress={() => {
                   letterClick(item, alphabet2.indexOf(item), 2);
                 }}
-                // disabled={disable2[alphabet2.indexOf(item)]}
               >
                 <Text style={{color: 'white', fontSize: 20}}>
                   {item.toUpperCase()}

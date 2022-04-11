@@ -14,6 +14,8 @@ import AppLovinMAX from 'react-native-applovin-max';
 export default function StatsScreen({navigation, route}) {
   const category = route.params.category;
   const score = route.params.score;
+  const correctWord = route.params.word;
+  const tries = route.params.tries;
 
   const backAction = () => {
     return true;
@@ -44,7 +46,7 @@ export default function StatsScreen({navigation, route}) {
           }}>
           <TouchableOpacity
             style={{position: 'absolute', left: 5}}
-            onPress={() => navigation.navigate('HomeScreen')}>
+            onPress={() => navigation.navigate('HomeScreen',{category:category, tries: tries})}>
             <Image
               style={{height: 69, width: 69}}
               source={require('../assets/backButt.imageset/back.png')}></Image>
@@ -52,6 +54,7 @@ export default function StatsScreen({navigation, route}) {
           <Text style={styles.header}>STATISTICS</Text>
         </View>
         <Text style={styles.subHeader}>{category.toUpperCase()}</Text>
+        <Text style={styles.theWord}>{correctWord.toUpperCase()}</Text>
         <Text
           style={{
             textAlign: 'center',
@@ -89,6 +92,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     marginTop: 30,
+    paddingBottom: 15,
+    fontWeight: 'bold',
+    letterSpacing: -0.8,
+    color: 'black',
+  },
+  theWord: {
+    textAlign: 'center',
+    fontSize: 18,
+    marginTop: 15,
     paddingBottom: 15,
     fontWeight: 'bold',
     letterSpacing: -0.8,

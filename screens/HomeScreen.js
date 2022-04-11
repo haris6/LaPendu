@@ -13,8 +13,22 @@ import AppLovinMAX from 'react-native-applovin-max';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {get} from 'react-native/Libraries/Utilities/PixelRatio';
 
-export default function HomeScreen({navigation}) {
+export default function HomeScreen({navigation,route}) {
   const [shown, setShown] = useState(0);
+  const [unlocked,setUnlocked] = useState("");
+  const [tries, setTries] = useState(0);
+  
+  useEffect(() => {
+    if (route.params?.category) {
+      setUnlocked(route.params?.category)
+    }
+  }, [route.params?.category]);
+
+  useEffect(() => {
+    if (route.params?.tries) {
+      setTries(route.params?.tries)
+    }
+  }, [route.params?.tries]);
 
   const mybanner = Platform.select({
     android: '27726cbd3cb14837',
@@ -69,7 +83,7 @@ export default function HomeScreen({navigation}) {
 
   initializeRewardedAds();
 
-  const myfun = item => {
+  const callAd = item => {
     loadRewardedAd();
     if (shown == 0) {
       setShown(1);
@@ -83,6 +97,15 @@ export default function HomeScreen({navigation}) {
       } else {
         console.log('reward ad yawaing');
       }
+    }
+  }
+
+  const checkUnlocked = item => {
+    if(!(item == unlocked)){
+      callAd(item);
+    }
+    else{
+      navigation.navigate('GameScreen', {item});
     }
   };
 
@@ -121,6 +144,15 @@ export default function HomeScreen({navigation}) {
     }
   };
 
+  const getLock = name =>{
+    if(name == unlocked){
+      return require('../assets/unlocked.png');
+    }
+    else{
+      return require('../assets/lock.png');
+    }
+  };
+
   const renderItem = ({item}) => {
     return (
       <View style={{}}>
@@ -132,7 +164,7 @@ export default function HomeScreen({navigation}) {
             marginRight: 5,
           }}
           onPress={() => {
-            myfun(item);
+            checkUnlocked(item);
           }}>
           <View style={{flexDirection: 'row'}}>
             <Image source={getImage(item)} style={{height: 30, width: 30}} />
@@ -150,7 +182,7 @@ export default function HomeScreen({navigation}) {
             </Text>
           </View>
           <Image
-            source={require('../assets/lock.png')}
+            source={getLock(item)}
             style={{height: 30, width: 30}}
           />
         </TouchableOpacity>
