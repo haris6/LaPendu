@@ -31,21 +31,21 @@ import {
     initializeBannerAds()
 
     useEffect(() => {
-        if (dots == "●  ●  ●"){
+        if (dots == "● ● ●"){
             setTimeout(function () {
                 setDots("●")
-            }, 300);
+            }, 250);
             setCount(count+1);
         }
         else{
             setTimeout(function () {
-                setDots(dots + "  ●")
+                setDots(dots + " ●")
             }, 500);
         }
         if(dots == ""){
-            navigation.navigate('HomeScreen')
+            setCount(0);
+            navigation.navigate('HomeScreen');
         }
-        
       }, [dots]);
 
       useEffect(()=>{
@@ -61,7 +61,9 @@ import {
         <View style={{flex:1,justifyContent: 'center', alignItems: 'center'}}>
             <View>
                 <Text style={styles.header}>LE  PENDU</Text>
-                <Text style={{paddingLeft:'12%',fontSize:25,fontWeight:"bold",color:"black",opacity:0.6,marginTop:25}}>{dots}</Text>
+                <View style={{justifyContent:'center',alignItems:'center'}}>
+                    <Text style={{fontSize:25,fontWeight:"bold",color:"black",opacity:0.7,marginTop:30}}>{dots}</Text>
+                </View>
             </View>
         </View>   
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -78,11 +80,15 @@ import {
   
   const styles = StyleSheet.create({
     header: {
-      fontSize: 50,
+      fontSize: 60,
       marginTop: 50,
       fontWeight: 'bold',
       letterSpacing: -1.9,
       color: 'black',
+      textShadowColor:'grey',
+      alignSelf:'center',
+      textShadowOffset:{height:2.5,width:2.5},
+      textShadowRadius:2,
     },
     banner: {
         borderRadius: 25,
