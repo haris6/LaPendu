@@ -40,7 +40,7 @@ import {
         else{
             setTimeout(function () {
                 setDots(dots + "  ●")
-            }, 600);
+            }, 500);
         }
         if(dots == ""){
             navigation.navigate('HomeScreen')
@@ -61,7 +61,7 @@ import {
         <View style={{flex:1,justifyContent: 'center', alignItems: 'center'}}>
             <View>
                 <Text style={styles.header}>LE  PENDU</Text>
-                <Text style={{paddingLeft:'12%',fontSize:25,fontWeight:"bold",color:"black",opacity:0.7,marginTop:20}}>{dots}</Text>
+                <Text style={{paddingLeft:'12%',fontSize:25,fontWeight:"bold",color:"black",opacity:0.6,marginTop:25}}>{dots}</Text>
             </View>
         </View>   
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
