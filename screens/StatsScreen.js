@@ -15,7 +15,6 @@ export default function StatsScreen({navigation, route}) {
   const category = route.params.category;
   const score = route.params.score;
   const correctWord = route.params.word;
-  const tries = route.params.tries;
 
   const backAction = () => {
     return true;
@@ -28,9 +27,24 @@ export default function StatsScreen({navigation, route}) {
       BackHandler.removeEventListener('hardwareBackPress', backAction);
   }, []);
 
+  // copied from applovin documentation
   const mybanner = Platform.select({
-    android: '4b35f1d958ab927b',
+    android: '4b35f1d958ab927b',//ids from applovi ads
+    ios: '7540b3845fe3d29a',
   });
+
+  const initializeBannerAds = () =>
+  {
+    // Banners are automatically sized to 320x50 on phones and 728x90 on tablets
+    // You may use the utility method `AppLovinMAX.isTablet()` to help with view sizing adjustments
+    AppLovinMAX.createBanner(mybanner, AppLovinMAX.AdViewPosition.BOTTOM_CENTER);
+
+    // Set background or background color for banners to be fully functional
+    // In this case we are setting it to black - PLEASE USE HEX STRINGS ONLY
+    AppLovinMAX.setBannerBackgroundColor(mybanner, '#000000');
+  }
+  
+  initializeBannerAds();
 
   return (
     <ImageBackground
@@ -46,7 +60,7 @@ export default function StatsScreen({navigation, route}) {
           }}>
           <TouchableOpacity
             style={{position: 'absolute', left: 5}}
-            onPress={() => navigation.navigate('HomeScreen',{category:category, tries: tries})}>
+            onPress={() => navigation.navigate('HomeScreen',{category:category})}>
             <Image
               style={{height: 69, width: 69}}
               source={require('../assets/backButt.imageset/back.png')}></Image>
@@ -59,7 +73,7 @@ export default function StatsScreen({navigation, route}) {
           style={{
             textAlign: 'center',
             fontSize: 20,
-            marginTop: 10,
+            marginTop: 5,
             paddingBottom: 15,
             fontWeight: 'bold',
             letterSpacing: -0.8,
@@ -90,8 +104,8 @@ const styles = StyleSheet.create({
   },
   subHeader: {
     textAlign: 'center',
-    fontSize: 22,
-    marginTop: 30,
+    fontSize: 26,
+    marginTop: 25,
     paddingBottom: 15,
     fontWeight: 'bold',
     letterSpacing: -0.8,
@@ -99,7 +113,7 @@ const styles = StyleSheet.create({
   },
   theWord: {
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 22,
     marginTop: 15,
     paddingBottom: 15,
     fontWeight: 'bold',

@@ -6,40 +6,49 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  BackHandler,
 } from 'react-native';
 import words from '../data.json';
 import React, {useState, useEffect} from 'react';
 import AppLovinMAX from 'react-native-applovin-max';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {get} from 'react-native/Libraries/Utilities/PixelRatio';
 
 export default function HomeScreen({navigation,route}) {
   const [shown, setShown] = useState(0);
   const [unlocked,setUnlocked] = useState("");
-  const [tries, setTries] = useState(0);
   
   useEffect(() => {
     if (route.params?.category) {
-      setUnlocked(route.params?.category)
+      setUnlocked(route.params?.category);
     }
   }, [route.params?.category]);
 
-  useEffect(() => {
-    if (route.params?.tries) {
-      setTries(route.params?.tries)
-    }
-  }, [route.params?.tries]);
+  const backAction = () => {
+    return true;
+  };
 
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
+  }, []);
+
+  // copied from applovin documentation
   const mybanner = Platform.select({
-    android: '27726cbd3cb14837',
+    android: '27726cbd3cb14837',//ids from applovin ads
+    ios: '9e938daadb4a11bc',
   });
 
+  // copied from applovin documentation
   const myreward = Platform.select({
     android: 'd066447410aa2591',
+    ios: 'eb0a7035a503d8dc',
   });
 
+  // copied from applovin documentation
   const [retryAttempt, setRetryAttempt] = useState(0);
 
+  // copied from applovin documentation
   const initializeRewardedAds = () => {
     AppLovinMAX.addEventListener('OnRewardedAdLoadedEvent', () => {
       // Rewarded ad is ready to be shown. AppLovinMAX.isInterstitialReady(REWARDED_AD_UNIT_ID) will now return 'true'
@@ -77,28 +86,44 @@ export default function HomeScreen({navigation,route}) {
     loadRewardedAd();
   };
 
+  // copied from applovin documentation
   function loadRewardedAd() {
     AppLovinMAX.loadRewardedAd(myreward);
   }
 
+  // copied from applovin documentation
   initializeRewardedAds();
 
   const callAd = item => {
+    // copied from applovin documentation
     loadRewardedAd();
     if (shown == 0) {
       setShown(1);
       navigation.navigate('GameScreen', {item});
     } else {
+      // copied from applovin documentation
       if (AppLovinMAX.isRewardedAdReady(myreward)) {
         AppLovinMAX.showRewardedAd(myreward);
         setTimeout(function () {
           navigation.navigate('GameScreen', {item});
         }, 10);
       } else {
-        console.log('reward ad yawaing');
+        console.log('Reward ad did not load. either check internet connectivity or admob, applovin, chartboost account and ads');
       }
     }
   }
+  const initializeBannerAds = () =>
+  {
+    // Banners are automatically sized to 320x50 on phones and 728x90 on tablets
+    // You may use the utility method `AppLovinMAX.isTablet()` to help with view sizing adjustments
+    AppLovinMAX.createBanner(mybanner, AppLovinMAX.AdViewPosition.BOTTOM_CENTER);
+
+    // Set background or background color for banners to be fully functional
+    // In this case we are setting it to black - PLEASE USE HEX STRINGS ONLY
+    AppLovinMAX.setBannerBackgroundColor(mybanner, '#000000');
+  }
+
+  initializeBannerAds()
 
   const checkUnlocked = item => {
     if(!(item == unlocked)){
@@ -202,6 +227,7 @@ export default function HomeScreen({navigation,route}) {
         style={{marginBottom: 240, marginHorizontal: 60}}
       />
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      {/* copied from applovin documentation */}
         <AppLovinMAX.AdView
           adUnitId={mybanner}
           adFormat={AppLovinMAX.AdFormat.BANNER}

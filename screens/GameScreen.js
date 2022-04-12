@@ -40,7 +40,6 @@ export default function GameScreen({navigation, route}) {
   const [score, setScore] = useState(-1);
   const [count, setCount] = useState(0);
   const [strike, setStrike] = useState(0);
-  const [tries,setTries] = useState(0);
   const [retryAttempt, setRetryAttempt] = useState(0);
   let wordArray = words[data.item];
   const category = data.item;
@@ -69,16 +68,19 @@ export default function GameScreen({navigation, route}) {
   ];
   const alphabet2 = ['v', 'w', 'x', 'y', 'z'];
 
+  // copied from applovin documentation
   const mybanner = Platform.select({
-    android: '3a8e976be157ff64',
+    android: '3a8e976be157ff64',//ids from applovin
+    ios: 'a35c48b69c06607e',
   });
 
   const myinterstitial = Platform.select({
-    android: 'c610fb63a0e41e0c',
+    android: 'c610fb63a0e41e0c',//ids from applovin
+    ios: 'eff328c0d5c4ac9e',
   });
 
   const navigateMe = () => {
-    navigation.navigate('StatsScreen', {category: category, score: score, word: randomWord, tries: tries});
+    navigation.navigate('StatsScreen', {category: category, score: score, word: randomWord});
   };
 
   const backAction = () => {
@@ -95,41 +97,36 @@ export default function GameScreen({navigation, route}) {
   useEffect(() => {
     let myWord = wordArray[Math.floor(Math.random() * wordArray.length)];
     setrandomWord(myWord);
-    if ((score % 2 == 0 && score != 0) || (tries % 2 == 0 && tries != 0)) {
+    if ( score % 2 == 0 && score != 0 ) {
+      // copied from applovin documentation
       loadInterstitial();
       if (AppLovinMAX.isInterstitialReady(myinterstitial)) {
          AppLovinMAX.showInterstitial(myinterstitial);
       } else {
-        console.log('haris this some bullshit');
+        console.log('Interstitial ad did not load. either check internet connectivity or admob, applovin, chartboost account and ads');
       }
     }
   }, [score]);
 
-  useEffect(() => {
-    if (route.params?.tries) {
-      setTries(route.params?.tries)
-    }
-  }, [route.params?.tries]);
-
+  
   useEffect(() => {
     if (strike == 6) {
       console.log('GAME OVER');
       setCount(0);
       setStrike(0);
-      setTries(tries + 1);
       setLetters('');
       setScore(0);
       navigateMe();
     }
   }, [strike]);
-
+  
+  
   useEffect(() => {
     if (randomWord.length == count) {
-      console.log('Termination Count', count);
-      console.log('Termination Letters', letters);
       setCount(0);
       setStrike(0);
       setScore(score + 1);
+      console.log("Round completed");
       setPressed('');
       setLetters('');
     }
@@ -138,10 +135,7 @@ export default function GameScreen({navigation, route}) {
   const letterClick = item => {
     if (randomWord.includes(item)) {
       if (!letters.includes(item)) {
-        console.log('The count: ', count);
         let increment = randomWord.split(item).length - 1;
-        console.log('The increment ', increment);
-        console.log('The space ', randomWord.split(' ').length - 1);
         count == 0 ? (increment += randomWord.split(' ').length - 1) : '';
         setCount(count + increment);
         setLetters(letters + item);
@@ -155,8 +149,8 @@ export default function GameScreen({navigation, route}) {
     setPressed(pressed + item);
   };
   
-
-  async function initializeInterstitialAds() {
+  // copied from applovin documentation
+  const initializeInterstitialAds = () => {
     AppLovinMAX.addEventListener('OnInterstitialLoadedEvent', () => {
       // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(INTERSTITIAL_AD_UNIT_ID) will now return 'true'
 
@@ -189,19 +183,28 @@ export default function GameScreen({navigation, route}) {
     });
 
     // Load the first interstitial
-    try{
-      loadInterstitial();
-    }
-    catch(e){
-      console.log(e);
-    }
+    loadInterstitial();
   }
 
+  // copied from applovin documentation
   function loadInterstitial() {
     AppLovinMAX.loadInterstitial(myinterstitial);
   }
 
   initializeInterstitialAds();
+
+  const initializeBannerAds = () => 
+  {
+    // Banners are automatically sized to 320x50 on phones and 728x90 on tablets
+    // You may use the utility method `AppLovinMAX.isTablet()` to help with view sizing adjustments
+    AppLovinMAX.createBanner(mybanner, AppLovinMAX.AdViewPosition.BOTTOM_CENTER);
+
+    // Set background or background color for banners to be fully functional
+    // In this case we are setting it to black - PLEASE USE HEX STRINGS ONLY
+    AppLovinMAX.setBannerBackgroundColor(mybanner, '#000000');
+  }
+  
+  initializeBannerAds()
 
   return (
     <ImageBackground
@@ -246,11 +249,7 @@ export default function GameScreen({navigation, route}) {
               borderColor: 'black',
             }}></Image>
           <View style={{left: 40}}>
-            <TextInput
-              style={{fontSize: 10, fontWeight: 'bold', color: 'black'}}>
-              {randomWord.toUpperCase()}
-            </TextInput>
-            <View style={{flexDirection: 'row', flex: 1}}>
+            <View style={{flexDirection: 'row', flex: 1,  alignItems: 'center'}}>
               {randomWord.split('').map((i, j) => {
                 if (i != ' ') {
                   return (
@@ -344,6 +343,7 @@ export default function GameScreen({navigation, route}) {
       </View>
 
       <View>
+      {/* copied from applovin documentation */}
         <AppLovinMAX.AdView
           adUnitId={mybanner}
           adFormat={AppLovinMAX.AdFormat.BANNER}

@@ -9,6 +9,7 @@
 import HomeScreen from './screens/HomeScreen';
 import GameScreen from './screens/GameScreen';
 import StatsScreen from './screens/StatsScreen';
+import MainScreen from './screens/MainScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'; 
 import React ,{useState}from 'react';
@@ -45,11 +46,12 @@ const App: () => Node = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomeScreen"
+      <Stack.Navigator initialRouteName="MainScreen"
         screenOptions={{
           headerShown: false
         }}
       >
+        <Stack.Screen name="MainScreen" component={MainScreen} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="GameScreen" component={GameScreen} />
         <Stack.Screen name="StatsScreen" component={StatsScreen} />
