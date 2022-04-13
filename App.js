@@ -12,29 +12,14 @@ import StatsScreen from './screens/StatsScreen';
 import MainScreen from './screens/MainScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'; 
-import React ,{useState}from 'react';
+import React from 'react';
 import AppLovinMAX from "react-native-applovin-max";
 import type {Node} from 'react';
 
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Button,
-  Platform
+  StyleSheet
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
 const Stack = createNativeStackNavigator();
 

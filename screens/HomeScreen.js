@@ -12,10 +12,25 @@ import words from '../data.json';
 import React, {useState, useEffect} from 'react';
 import AppLovinMAX from 'react-native-applovin-max';
 
-export default function HomeScreen({navigation,route}) {
+export default function HomeScreen({navigation, route}) {
   const [shown, setShown] = useState(0);
-  const [unlocked,setUnlocked] = useState("");
-  
+  const [unlocked, setUnlocked] = useState('');
+
+  // copied from applovin documentation
+  const [retryAttempt, setRetryAttempt] = useState(0);
+
+  // copied from applovin documentation
+  const mybanner = Platform.select({
+    android: '27726cbd3cb14837', //ids from applovin ads
+    ios: '9e938daadb4a11bc',
+  });
+
+  // copied from applovin documentation
+  const myreward = Platform.select({
+    android: 'd066447410aa2591',
+    ios: 'eb0a7035a503d8dc',
+  });
+
   useEffect(() => {
     if (route.params?.category) {
       setUnlocked(route.params?.category);
@@ -32,21 +47,6 @@ export default function HomeScreen({navigation,route}) {
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
   }, []);
-
-  // copied from applovin documentation
-  const mybanner = Platform.select({
-    android: '27726cbd3cb14837',//ids from applovin ads
-    ios: '9e938daadb4a11bc',
-  });
-
-  // copied from applovin documentation
-  const myreward = Platform.select({
-    android: 'd066447410aa2591',
-    ios: 'eb0a7035a503d8dc',
-  });
-
-  // copied from applovin documentation
-  const [retryAttempt, setRetryAttempt] = useState(0);
 
   // copied from applovin documentation
   const initializeRewardedAds = () => {
@@ -81,7 +81,7 @@ export default function HomeScreen({navigation,route}) {
       loadRewardedAd();
     });
     AppLovinMAX.addEventListener('OnRewardedAdReceivedRewardEvent', () => {});
-    
+
     // Load the first rewarded ad
     loadRewardedAd();
   };
@@ -108,28 +108,17 @@ export default function HomeScreen({navigation,route}) {
           navigation.navigate('GameScreen', {item});
         }, 10);
       } else {
-        console.log('Reward ad did not load. either check internet connectivity or admob, applovin, chartboost account and ads');
+        console.log(
+          'Reward ad did not load. either check internet connectivity or admob, applovin, chartboost account and ads',
+        );
       }
     }
-  }
-  const initializeBannerAds = () =>
-  {
-    // Banners are automatically sized to 320x50 on phones and 728x90 on tablets
-    // You may use the utility method `AppLovinMAX.isTablet()` to help with view sizing adjustments
-    AppLovinMAX.createBanner(mybanner, AppLovinMAX.AdViewPosition.BOTTOM_CENTER);
-
-    // Set background or background color for banners to be fully functional
-    // In this case we are setting it to black - PLEASE USE HEX STRINGS ONLY
-    AppLovinMAX.setBannerBackgroundColor(mybanner, '#000000');
-  }
-
-  initializeBannerAds()
+  };
 
   const checkUnlocked = item => {
-    if(!(item == unlocked)){
+    if (!(item == unlocked)) {
       callAd(item);
-    }
-    else{
+    } else {
       navigation.navigate('GameScreen', {item});
     }
   };
@@ -169,11 +158,10 @@ export default function HomeScreen({navigation,route}) {
     }
   };
 
-  const getLock = name =>{
-    if(name == unlocked){
+  const getLock = name => {
+    if (name == unlocked) {
       return require('../assets/unlocked.png');
-    }
-    else{
+    } else {
       return require('../assets/lock.png');
     }
   };
@@ -206,10 +194,7 @@ export default function HomeScreen({navigation,route}) {
               {item.toUpperCase()}
             </Text>
           </View>
-          <Image
-            source={getLock(item)}
-            style={{height: 30, width: 30}}
-          />
+          <Image source={getLock(item)} style={{height: 30, width: 30}} />
         </TouchableOpacity>
       </View>
     );
@@ -227,7 +212,7 @@ export default function HomeScreen({navigation,route}) {
         style={{marginBottom: 240, marginHorizontal: 60}}
       />
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
-      {/* copied from applovin documentation */}
+        {/* copied from applovin documentation */}
         <AppLovinMAX.AdView
           adUnitId={mybanner}
           adFormat={AppLovinMAX.AdFormat.BANNER}

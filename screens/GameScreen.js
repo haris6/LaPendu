@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,6 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  TextInput,
   BackHandler,
 } from 'react-native';
 import words from '../data.json';
@@ -73,7 +72,8 @@ export default function GameScreen({navigation, route}) {
     android: '3a8e976be157ff64',//ids from applovin
     ios: 'a35c48b69c06607e',
   });
-
+  
+  // copied from applovin documentation
   const myinterstitial = Platform.select({
     android: 'c610fb63a0e41e0c',//ids from applovin
     ios: 'eff328c0d5c4ac9e',
@@ -84,7 +84,7 @@ export default function GameScreen({navigation, route}) {
   };
 
   const backAction = () => {
-    return true;
+    return false;
   };
 
   useEffect(() => {
@@ -192,19 +192,6 @@ export default function GameScreen({navigation, route}) {
   }
 
   initializeInterstitialAds();
-
-  const initializeBannerAds = () => 
-  {
-    // Banners are automatically sized to 320x50 on phones and 728x90 on tablets
-    // You may use the utility method `AppLovinMAX.isTablet()` to help with view sizing adjustments
-    AppLovinMAX.createBanner(mybanner, AppLovinMAX.AdViewPosition.BOTTOM_CENTER);
-
-    // Set background or background color for banners to be fully functional
-    // In this case we are setting it to black - PLEASE USE HEX STRINGS ONLY
-    AppLovinMAX.setBannerBackgroundColor(mybanner, '#000000');
-  }
-  
-  initializeBannerAds()
 
   return (
     <ImageBackground
